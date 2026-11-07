@@ -244,6 +244,8 @@ footer a { color: var(--accent); }
   padding: 2px 8px; color: var(--muted); margin-left: auto;
 }
 .badge.ac { color: var(--l1); border-color: currentColor; }
+.subt { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+.subt th, .subt td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
 .badge.wa { color: var(--l4); border-color: currentColor; }
 .badge.tle { color: var(--accent); border-color: currentColor; }
 .badge.re { color: var(--l3); border-color: currentColor; }
@@ -260,6 +262,35 @@ footer a { color: var(--accent); }
 .reader li { margin: 6px 0; }
 .reader pre { margin-top: 6px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+.stage-block { margin-top: 40px; }
+.stage-head { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+.stage-num { flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--c); color: var(--bg); font-family: var(--display); font-weight: 700; font-size: 1.25rem; }
+.stage-head h2 { margin: 0; font-family: var(--display); font-size: 1.4rem; color: var(--c); }
+.stage-head p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.tree-root { display: inline-block; margin-top: 28px; padding: 8px 16px; border-radius: 12px; background: var(--fg); color: var(--bg); font-family: var(--display); font-weight: 700; }
+.tree, .tree ul { list-style: none; margin: 0; padding: 0 0 0 22px; position: relative; }
+.tree::before, .tree ul::before { content: ""; position: absolute; left: 8px; top: 0; bottom: 14px; width: 2px; background: var(--c); opacity: 0.5; }
+.tree > li, .tree ul > li { position: relative; padding: 0 0 12px; min-width: 0; }
+.tree > li::before, .tree ul > li::before { content: ""; position: absolute; left: -13px; top: 16px; width: 13px; height: 2px; background: var(--c); opacity: 0.5; }
+.tbranch > .tlabel { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 5px 12px; border: 1.5px solid var(--c); border-radius: 999px; background: var(--surface); color: var(--c); font-family: var(--display); font-weight: 600; font-size: 14px; }
+.tbranch > .tlabel small { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.leaf > .node-body { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+.leaf > .node-body b { font-family: var(--display); font-size: 1rem; overflow-wrap: anywhere; }
+.leaf > .node-body p { margin: 4px 0 0; color: var(--muted); font-size: 13.5px; }
+.node-act { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.node-act:empty { display: none; }
+.tree ul.leaves { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; padding-left: 22px; }
+.tree ul.leaves > li::before { display: none; }
+.tree ul.leaves > li { flex: 0 1 240px; max-width: 100%; min-width: 0; padding: 0; }
+.tree ul.leaves > li:has(.lbox[open]) { flex-basis: 100%; }
+.lbox { background: var(--surface); border: 1.5px solid var(--c); border-radius: 10px; padding: 7px 10px; }
+.lbox summary { cursor: pointer; font-family: var(--display); font-weight: 600; font-size: 14px; line-height: 1.35; list-style: none; overflow-wrap: anywhere; }
+.lbox summary::-webkit-details-marker { display: none; }
+.lbox summary::after { content: "+"; float: right; margin-left: 8px; color: var(--c); font-weight: 700; }
+.lbox[open] summary::after { content: "−"; }
+.lbox p { margin: 8px 0 0; color: var(--muted); font-size: 13.5px; }
+.lbox .node-act { margin-top: 8px; }
+@media (max-width: 480px) { .stage-num { width: 38px; height: 38px; font-size: 1.05rem; } }
 </style>
 
 <header class="hero">
@@ -287,6 +318,12 @@ footer a { color: var(--accent); }
     </div>
     <div class="row" style="margin-top:8px">
       <div class="pills" id="levelPills" role="group" aria-label="Mức độ"></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="pills" id="viewPills" role="group" aria-label="Chế độ xem">
+        <button class="pill" data-view="road" aria-pressed="true">Theo lộ trình</button>
+        <button class="pill" data-view="list" aria-pressed="false">Theo loại bài</button>
+      </div>
     </div>
   </div>
 </nav>
@@ -523,6 +560,14 @@ dp[1][0] = 0;`, ex: "Người du lịch (TSP), phân công công việc" },
   { t: "algo", n: "Digit DP", lv: 3, d: "Đếm số trong [1, N] thỏa tính chất theo chữ số. Dùng cờ còn bị ràng buộc bởi N và cờ đã bắt đầu khác 0.", c: "O(số chữ số · trạng thái · 10)", code: `// f(pos, tight, started, state): số cách hợp lệ từ vị trí pos
 // tight: còn đi theo giới hạn N hay không
 // started: đã gặp chữ số khác 0 hay chưa`, ex: "Đếm số không chứa chữ số 4, tổng chữ số chia hết" },
+  { t: "algo", n: "Loang (flood fill) trên ma trận", lv: 1, d: "Loang (flood fill) từ một ô: đi tới các ô kề cùng tính chất cho đến khi hết vùng liên thông. Là BFS/DFS áp dụng trực tiếp lên lưới.", c: "O(n·m)", code: `// Lưới là đồ thị ngầm: mỗi ô nối với 4 ô kề
+void dfs(int r, int c) {
+  vis[r][c] = true;
+  for (int k = 0; k < 4; k++) {
+    int nr = r + dr[k], nc = c + dc[k];
+    if (in(nr, nc) && g[nr][nc] == '1' && !vis[nr][nc]) dfs(nr, nc);
+  }
+}`, ex: "Đếm đảo, tô lại vùng cùng màu, kiểm tra hai ô có nối nhau không" },
   { t: "algo", n: "BFS & DFS", lv: 1, d: "Duyệt đồ thị. BFS duyệt theo lớp và cho đường ngắn nhất khi trọng số bằng nhau; DFS đi sâu trước.", c: "O(V + E)", code: `vector<int> dist(n, -1);
 queue<int> q;
 q.push(s); dist[s] = 0;
@@ -971,6 +1016,11 @@ const LESSONS = {
     i: "Digit DP đếm số trong một khoảng theo từng chữ số từ trái sang phải. Trạng thái nhớ vị trí, các ràng buộc và tính chất đã có.",
     s: ["Ta xét số N dạng chuỗi chữ số. Duyệt từng vị trí và chọn chữ số hợp lệ.", "Cờ tight: cho biết tiền tố đã bằng tiền tố của N hay chưa, nếu có thì chữ số kế tiếp bị giới hạn.", "Cờ started: cho biết đã gặp chữ số khác 0 chưa, để xử lý số có ít chữ số.", "Có memo theo (vị trí, trạng thái) khi không bị giới hạn bởi tight."],
     m: ["Quên xử lý trường hợp số ngắn hơn N.", "Đếm số 0 đầu như số hợp lệ."]
+  },
+  "Loang (flood fill) trên ma trận": {
+    i: "Loang (flood fill) là dùng BFS hoặc DFS để đi qua toàn bộ một vùng liên thông của các ô có cùng tính chất, bắt đầu từ một ô. Đây là cách đếm đảo, tô màu vùng và kiểm tra liên thông trên lưới.",
+    s: ["Coi lưới là đồ thị ngầm: mỗi ô nối với tối đa 4 ô kề cạnh (8 ô nếu tính đường chéo).", "Đánh dấu ô đã thăm ngay khi đẩy vào queue hoặc khi đi vào, để không xử lý lại.", "Đếm thành phần: duyệt từng ô; gặp ô 1 chưa thăm thì tăng bộ đếm và loang hết vùng đó. Tổng thời gian O(n·m) vì mỗi ô được thăm đúng một lần."],
+    m: ["Quên kiểm tra biên trước khi truy cập g[nr][nc].", "Đánh dấu thăm sau khi đã đẩy nhiều lần, làm ô được thêm vào queue nhiều lần.", "DFS đệ quy trên lưới 1000×1000 có thể tràn stack; dùng BFS hoặc stack tường minh."]
   },
   "BFS & DFS": {
     i: "BFS và DFS là hai cách duyệt đồ thị cơ bản nhất. BFS đi theo lớp, DFS đi sâu trước. Hầu hết bài đồ thị đều bắt đầu từ đây.",
@@ -1882,6 +1932,40 @@ for (long long x = 1; x <= N; x++) {
 // Đếm theo chữ số: nếu đang ở vị trí i và giới hạn cho phép,
 // chọn chữ số d < digit[i] (d != 4) rồi đếm các chữ số còn lại tự do
 // f[k] = số chuỗi k chữ số không chứa 4 = 9^k (tính với chữ số tự do)`, e: "Chữ số đầu tiên của N giới hạn lựa chọn. Khi đã nhỏ hơn N ở một vị trí, các vị trí sau được chọn tự do và đếm bằng công thức lũy thừa." }
+    ]
+  },
+  "Loang (flood fill) trên ma trận": {
+    p: "Lưới n × m gồm ô 0 và ô 1. Đếm số vùng liên thông (4 hướng) của các ô 1.",
+    steps: [
+      { t: "Mỗi ô 1 chạy một lần loang trên mảng thăm mới", o: "O((n·m)²)", c: String.raw`int comps = 0;
+for (int i = 0; i < n; i++)
+    for (int j = 0; j < m; j++) {
+        if (g[i][j] != '1') continue;
+        vector<vector<bool>> vis(n, vector<bool>(m, false));   // mảng mới cho mỗi ô
+        bool earlier = false;
+        function<void(int,int)> dfs = [&](int r, int c) {
+            vis[r][c] = true;
+            if (r * m + c < i * m + j) earlier = true;        // đã chạm ô đứng trước
+            int dr[] = {-1, 1, 0, 0}, dc[] = {0, 0, -1, 1};
+            for (int k = 0; k < 4; k++) {
+                int nr = r + dr[k], nc = c + dc[k];
+                if (nr >= 0 && nr < n && nc >= 0 && nc < m && g[nr][nc] == '1' && !vis[nr][nc])
+                    dfs(nr, nc);
+            }
+        };
+        dfs(i, j);
+        if (!earlier) comps++;   // ô (i,j) là ô đầu tiên của vùng
+    }`, e: "Với mỗi ô 1, loang trên mảng thăm mới và kiểm tra xem vùng có chứa ô nào đứng trước trong thứ tự duyệt không. Nếu không, ô hiện tại là ô đầu của vùng và được tính một lần. Đúng nhưng chậm vì loang lặp lại nhiều lần trên cùng một vùng." },
+      { t: "Dùng chung một mảng thăm, mỗi vùng loang đúng một lần", o: "O(n·m)", c: String.raw`int dr[] = {-1, 1, 0, 0}, dc[] = {0, 0, -1, 1};
+vector<vector<bool>> vis(n, vector<bool>(m, false));   // dùng chung một mảng
+int comps = 0;
+for (int i = 0; i < n; i++)
+    for (int j = 0; j < m; j++)
+        if (g[i][j] == '1' && !vis[i][j]) {
+            comps++;
+            // loang hết vùng này bằng BFS/DFS, mỗi ô chỉ thăm một lần
+        }
+// (phần loang bên trong dùng dfs/BFS như trong lời giải chính)`, e: "Khi gặp ô 1 chưa thăm, đó là ô đầu của một vùng mới. Loang một lần sẽ đánh dấu hết vùng, nên mỗi ô chỉ được xử lý đúng một lần." }
     ]
   },
   "BFS & DFS": {
@@ -3178,7 +3262,16 @@ int main() {
 };
 
 /* Bài luyện tập: liên kết theo tag trên Codeforces (đã kiểm tra định dạng URL tag, không gắn ID bài cụ thể) */
+/* Liên kết tìm kiếm bài trên các OJ khác (đây là trang tìm kiếm, chưa gắn ID bài cụ thể) */
+const PRACTICE_SEARCH = {
+  "Loang (flood fill) trên ma trận": [
+    { label: "AtCoder ↗", url: "https://atcoder.jp/contests/archive?keyword=flood+fill" },
+    { label: "VNOJ ↗", url: "https://oj.vnoi.info/problems/?search=lưới" }
+  ]
+};
+
 const PRACTICE = {
+  "Loang (flood fill) trên ma trận": "dfs and similar",
   "Hàm phi Euler": "number theory", "Euler tour trên cây": "trees",
   "vector": "data structures", "string": "strings", "pair & tuple": "implementation",
   "map / set": "data structures", "unordered_map / set": "hashing", "deque": "data structures",
@@ -3289,9 +3382,48 @@ function openEx(id) {
     ${tests}
     <button class="runbtn" id="judge" data-name="${esc(e.n)}">Chấm bài</button>
     <span class="verdict-line" id="summary">${prev ? "Lần chấm gần nhất: " + esc(EXLABEL[prev]) : ""}</span>
+    <h3>Nộp bài trên máy (chấm theo subtask)</h3>
+    <p>Lưu lời giải thành <code>sol.cpp</code>, rồi chạy trong thư mục có <code>cpjudge.py</code> và <code>tests/</code>:</p>
+    <pre><code>python3 cpjudge.py sol.cpp --submit ketqua.json</code></pre>
+    <p class="cx">Mở <code>ketqua.json</code>, dán toàn bộ nội dung vào ô dưới để xem bảng chấm theo subtask.</p>
+    <textarea id="resultjson" class="ans" rows="4" spellcheck="false" placeholder="Dán nội dung ketqua.json vào đây"></textarea>
+    <button class="runbtn" id="importres" data-name="${esc(e.n)}">Hiện bảng chấm</button>
+    <div id="importout"></div>
     ${SOLUTIONS[e.n] ? solHtml(e.n) : ""}`;
   document.getElementById("exdlg").showModal();
   document.getElementById("exdlg").scrollTop = 0;
+}
+
+function importResult(name) {
+  const X = EXERCISES[name];
+  const out = document.getElementById("importout");
+  const raw = document.getElementById("resultjson").value.trim();
+  if (!X || !out) return;
+  let r;
+  try { r = JSON.parse(raw); } catch (err) {
+    out.innerHTML = `<p class="cx">Không đọc được JSON: ${esc(err.message)}</p>`;
+    return;
+  }
+  const p = (r.problems || []).find(x => x.title === X.title);
+  if (!p) {
+    out.innerHTML = `<p class="cx">File này không có bài "${esc(X.title)}".</p>`;
+    return;
+  }
+  const rows = (p.subtasks || []).map(st => {
+    const ok = (st.cases || []).filter(c => c.verdict === "AC").length;
+    const worst = Math.max(0, ...(st.cases || []).map(c => c.time || 0));
+    const v = String(st.verdict || "").toLowerCase();
+    return `<tr><td>${esc(st.name)}</td><td>${esc(st.points)}</td>
+      <td><span class="badge ${esc(v)}">${esc(EXLABEL[st.verdict] || st.verdict)}</span></td>
+      <td>${ok}/${(st.cases || []).length} test AC</td><td>${esc(st.score)}</td><td>${worst.toFixed(3)}s</td></tr>`;
+  }).join("");
+  const pv = String(p.verdict || "").toLowerCase();
+  out.innerHTML = `
+    <p>Bài nộp: <b>${esc(r.source || "")}</b> · chấm lúc ${esc(r.judged_at || "")} · giới hạn ${esc(r.limit)}s/test</p>
+    <p>Kết quả: <span class="badge ${esc(pv)}">${esc(EXLABEL[p.verdict] || p.verdict)}</span>
+      Điểm <b>${esc(p.score)}/${esc(p.max_score)}</b></p>
+    <table class="subt"><thead><tr><th>Subtask</th><th>Điểm tối đa</th><th>Verdict</th><th>Test</th><th>Điểm</th><th>Chậm nhất</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
 }
 
 function judge(name) {
@@ -3948,7 +4080,67 @@ int main() {
 `
 });
 
-const state = { type: "all", lv: "all", q: "" };
+Object.assign(EXERCISES, {
+  "Loang (flood fill) trên ma trận": {
+    "title": "Đếm vùng liên thông trên lưới",
+    "statement": "Cho lưới n × m gồm các ký tự '0' và '1'. Hai ô '1' thuộc cùng một vùng nếu chúng kề nhau theo 4 hướng (trên, dưới, trái, phải) và có thể đi qua các ô '1' liên tiếp. Đếm số vùng.",
+    "input": "Dòng 1: n và m. n dòng tiếp theo: mỗi dòng là một chuỗi m ký tự '0' hoặc '1'.",
+    "output": "Một số: số vùng liên thông.",
+    "limit": "1 ≤ n, m ≤ 1000, 1 giây. Gợi ý: loang (BFS/DFS) từ mỗi ô 1 chưa thăm, đánh dấu ô đã thăm.",
+    "tests": [
+      {
+        "in": "3 4\n1100\n0110\n0001\n",
+        "out": "2"
+      },
+      {
+        "in": "2 2\n00\n00\n",
+        "out": "0"
+      },
+      {
+        "in": "1 5\n10101\n",
+        "out": "3"
+      }
+    ]
+  },
+});
+Object.assign(SOLUTIONS, {
+  "Loang (flood fill) trên ma trận": String.raw`#include <bits/stdc++.h>
+using namespace std;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, m;
+    cin >> n >> m;
+    vector<string> g(n);
+    for (auto& row : g) cin >> row;
+    vector<vector<char>> vis(n, vector<char>(m, 0));
+    int dr[] = {-1, 1, 0, 0}, dc[] = {0, 0, -1, 1};
+    int comps = 0;
+    queue<pair<int, int>> q;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            if (g[i][j] == '1' && !vis[i][j]) {
+                comps++;
+                vis[i][j] = 1;
+                q.push({i, j});
+                while (!q.empty()) {          // BFS loang hết vùng
+                    auto [r, c] = q.front(); q.pop();
+                    for (int k = 0; k < 4; k++) {
+                        int nr = r + dr[k], nc = c + dc[k];
+                        if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
+                        if (g[nr][nc] == '1' && !vis[nr][nc]) {
+                            vis[nr][nc] = 1;
+                            q.push({nr, nc});
+                        }
+                    }
+                }
+            }
+    cout << comps << '\n';
+}
+`
+});
+
+const state = { type: "all", lv: "all", q: "", view: "road" };
 const main = document.getElementById("main");
 
 function esc(s) {
@@ -3991,11 +4183,54 @@ function card(e) {
     ${LESSONS[e.n] ? `<button class="readbtn" data-id="${e.id}">Đọc bài</button>` : ""}
     ${EXERCISES[e.n] ? `<button class="readbtn ex" data-id="${e.id}">Làm bài tập</button>` : ""}
     ${PRACTICE[e.n] ? `<a class="pl" href="https://codeforces.com/problemset?tags=${encodeURIComponent(PRACTICE[e.n])}" target="_blank" rel="noopener">Bài luyện tập theo chủ đề ↗</a>` : ""}
+    ${(PRACTICE_SEARCH[e.n] || []).map(l => `<a class="pl" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join("")}
     <div class="chips" aria-label="Ứng dụng">${chips}</div>
   </article>`;
 }
 
+function actionsFor(e) {
+  const parts = [];
+  if (LESSONS[e.n]) parts.push(`<button class="readbtn" data-id="${e.id}">Đọc bài</button>`);
+  if (EXERCISES[e.n]) parts.push(`<button class="readbtn ex" data-id="${e.id}">Làm bài tập</button>`);
+  if (PRACTICE[e.n]) parts.push(`<a class="pl" href="https://codeforces.com/problemset?tags=${encodeURIComponent(PRACTICE[e.n])}" target="_blank" rel="noopener">Codeforces ↗</a>`);
+  (PRACTICE_SEARCH[e.n] || []).forEach(l => parts.push(`<a class="pl" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`));
+  return parts.join("");
+}
+
+function renderRoad() {
+  const stages = [1, 2, 3, 4].map(lv => {
+    const all = D.filter(e => e.lv === lv && matches(e));
+    if (!all.length) return "";
+    const branches = Object.keys(TYPES).map(t => {
+      const items = all.filter(e => e.t === t);
+      if (!items.length) return "";
+      return `<li class="tbranch">
+        <span class="tlabel">${esc(TYPES[t])} <small>${items.length}</small></span>
+        <ul class="leaves">${items.map(e => `<li class="leaf">
+          <details class="lbox">
+            <summary>${esc(e.n)}</summary>
+            <p>${esc(e.d)}</p>
+            <div class="node-act">${actionsFor(e)}</div>
+          </details>
+        </li>`).join("")}</ul>
+      </li>`;
+    }).join("");
+    return `<section class="stage-block" style="--c: var(--l${lv})">
+      <header class="stage-head">
+        <span class="stage-num">${lv}</span>
+        <div><h2>${esc(LEVELS[lv])}</h2><p>${all.length} mục</p></div>
+      </header>
+      <ul class="tree">${branches}</ul>
+    </section>`;
+  }).join("");
+  const root = `<div class="tree-root"><span>C++ thi đấu</span></div>`;
+  main.innerHTML = stages
+    ? root + stages
+    : `<p class="empty show">Không có mục nào khớp bộ lọc. Thử từ khóa khác hoặc bỏ bớt lọc.</p>`;
+}
+
 function render() {
+  if (state.view === "road") return renderRoad();
   const sections = Object.keys(TYPES).map(t => {
     const items = D.filter(e => e.t === t && matches(e));
     if (!items.length) return "";
@@ -4028,6 +4263,13 @@ document.getElementById("levelPills").addEventListener("click", e => {
   if (!b) return;
   state.lv = b.dataset.lv;
   pills(); render();
+});
+document.getElementById("viewPills").addEventListener("click", e => {
+  const b = e.target.closest("[data-view]");
+  if (!b) return;
+  state.view = b.dataset.view;
+  document.querySelectorAll("#viewPills [data-view]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  render();
 });
 document.getElementById("q").addEventListener("input", e => {
   state.q = e.target.value.trim().toLowerCase();
@@ -4088,6 +4330,7 @@ document.addEventListener("click", e => {
   const b = e.target.closest(".readbtn.ex");
   if (b) openEx(Number(b.dataset.id));
   if (e.target.id === "judge") judge(e.target.dataset.name);
+  if (e.target.id === "importres") importResult(e.target.dataset.name);
 });
 document.getElementById("exclose").addEventListener("click", () => document.getElementById("exdlg").close());
 document.getElementById("exdlg").addEventListener("click", e => {
